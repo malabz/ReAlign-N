@@ -1,6 +1,6 @@
-# ReAlign-N
+# ReAlign-N: an integrated realignment approach for multiple nucleic acid sequence alignment, combining global and local realignments
 
-TPMA is a tool written in C++20 for combining and refining multiple MSA results using a two-pointer algorithm. It runs on Linux.
+ReAlign-N is a tool written in C++11 for realigning the multiple nucleic acid sequence alignment. It runs on Linux.
 
 ## 🔨Installation and Usage
 
@@ -11,17 +11,17 @@ TPMA is a tool written in C++20 for combining and refining multiple MSA results 
 
 3.Install ReAlign-N.
 ```bash
-#1 Create and activate a conda environment for TPMA
+#1 Create and activate a conda environment for ReAlign-N
 conda create -n realign_n_env
 conda activate realign_n_env
 
 #2 Add channels to conda
 conda config --add channels malab
 
-#3 Install TPMA
+#3 Install ReAlign-N
 conda install -c malab realign_n
 
-#4 Test TPMA
+#4 Test ReAlign-N
 realign_n -h
 ```
 
@@ -38,7 +38,7 @@ cd ReAlign-N
 #3 Compile
 make
 
-#4 Test TPMA
+#4 Test ReAlign-N
 ./realign_n -h
 ```
 
@@ -56,43 +56,35 @@ Options:
 ```
 
 ## 🔬Test dataset and the use case
-### 1. Information about the [test dataset](https://github.com/malabz/TPMA/tree/main/data)
+### 1. Information about the test dataset
 
 Dataset|Sequences Num|Repeats Num|Avg Length|Similarity
 :---:|:---:|:---:|:---:|:---:
-mt genomes|30|4|about 16568bp|The average similarity is about 99.7%
-HVS-II|10|10|about 365bp|The average similarity is about 98.6%
-16S rRNA|100|8|about 1440bp|The average similarity is about 74.6%
-23S rRNA|64|10|about 3113bp|The average similarity is about 92.7%
-SARS-CoV-2_20200301|39|4|about 29858bp|The average similarity is about 99.8%
-SARS-CoV-2_20200417|100|4|about 27623bp|The average similarity is about 85.3%
-16s simu|100|3|about 1550bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
-23s simu|100|3|about 3900bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
-CIPRES-128|255|10|about 1550bp|The average similarity is about 80%
-CIPRES-256|511|10|about 1550bp|The average similarity is about 80%
-
+16s simu|100|9|about 1550bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+mt simu|100|9|about 16000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+sars2 simu|100|9|about 29000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+CIPRES-128|255|9|about 1550bp|The average similarity is about 80%
+CIPRES-256|511|9|about 1550bp|The average similarity is about 80%
+CIPRES-512|1023|9|about 1550bp|The average similarity is about 80%
+CIPRES-1024|2047|9|about 1550bp|The average similarity is about 80%
 
 ### 2. The use case
 ```shell
 # Download data
-wget http://lab.malab.cn/~zyx/tools/TPMA/data/16s_rRNA.tar.gz
+wget http://lab.malab.cn/~zyx/tools/ReAlign-N/data/16s_simu.tar.gz
 
 # Unzip data
-tar -zxvf 16s_rRNA.tar.gz
+tar -zxvf 16s_simu.tar.gz
 
 # Get the folder path
-cd 16s_rRNA
+cd 16s_simu
 
-# Run TPMA
-./tpma -a msa_results/16s_rRNA_100seq_rep1/16s_rRNA_100seq_rep1_clustalw2.fasta msa_results/16s_rRNA_100seq_rep1/16s_rRNA_100seq_rep1_mafft.fasta msa_results/16s_rRNA_100seq_rep1/16s_rRNA_100seq_rep1_muscle3.fasta msa_results/16s_rRNA_100seq_rep1/16s_rRNA_100seq_rep1_tcoffee.fasta -r raw_data/16s_rRNA_100seq_rep1.fasta -o 16s_rRNA_100seq_rep1_tpma_c4.fasta 
+# Run ReAlign-N
+./realign_n -r raw_data/16s_similarity_70_1.fas -a msa_results/16s_similarity_70_1_clustalo.fas -o 16s_similarity_70_1_clustalo_realign_n.fas -m 1
 ```
 ## 📍Reminder
-1. Currently TPMA is **ONLY** available for DNA/RNA. 
-2. The application of TPMA assumes that the sequences' IDs within the MSAs are unique.
-(E.g. Due to the excessively long length of the sequence IDs in the original data set, Clustal format(the default output format of ClustalW2/PCMA/POA/T-Coffee) may truncate the IDs, resulting in consistent IDs in the alignment output that TPMA cannot process. If the IDs in the original data are too long, we suggest manually renumbering them before using MSA software).
-3. Convert Clustal format to FASTA format using tool: [aln2fasta](https://github.com/malabz/MSATOOLS/tree/main/format-converter)
-4. TPMA will sort the sequences, but we recommend that the input sequences be in the same order as the original file.
-5. TPMA will remove any bad characters that are present in the input data.
+1. Currently ReAlign-N is **ONLY** available for DNA/RNA. 
+2. 
 
 ## 🖥️Environment
 System|GCC version
@@ -107,6 +99,6 @@ WSL|GCC 9.4.0
 ## 👋Contacts
 The software tools are developed and maintained by 🧑‍🏫[ZOU's lab](http://lab.malab.cn/~zq/en/index.html).
 
-If you find any bug, welcome to contact us on the [issues page](https://github.com/malabz/TPMA/issues) or email us at 👉[📩](zhai1xiao@gmail.com).
+If you find any bug, welcome to contact us on the [issues page](https://github.com/malabz/ReAlign-N/issues) or email us at 👉[📩](zhai1xiao@gmail.com).
 
 More tools and infomation can visit our [github](https://github.com/malabz).

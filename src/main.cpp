@@ -304,7 +304,7 @@ int main(int argc, char **argv) {
     std::cout << "Initial alignment  : " << initial_alignment << std::endl;
     std::cout << "Realignment mode   : " << mode << std::endl;
     
-    system("mkdir tmp".c_str());
+    system("mkdir tmp");
     
     if (mode == "1") {
         // Read data in fasta format
@@ -410,5 +410,6 @@ int main(int argc, char **argv) {
     }
     std::cout << "The output of ReAlign-N is stored in " << output << "." << std::endl;
     std::cout << "Finish!" << std::endl;
+    system("rm -r tmp");
     return 0;
 }
