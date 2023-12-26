@@ -44,11 +44,15 @@ make
 
 ### 2 Usage
 ```
-./tpma -a <initial_alignments_list> -r <raw_data> -o <output>
-   -a is used to specify the paths of all initial alignments to be merged
-   -r is used to specify the path of raw data, a file in FASTA format
-   -o is used to specify the output for TPMA result, a file in FASTA format
-   -h print help message
+/.realign_n -r <unaligned sequences> -a <initial alignment> [-o <output>] [-m <mode>]
+Options:
+  -r <unaligned sequences>     Specify the path of raw data, a file in FASTA format.
+  -a <initial alignment>       Specify the path of initial alignment, a file in FASTA format.
+  -o <output>                  Specify the output for ReAlign-N, a file in FASTA format.
+  -m <mode>                    Specify the mode of ReAlign-N.
+                               1 for local realignment followed by global realignment.
+                               2 for global realignment followed by local realignment.
+  -h                           Print the help message.
 ```
 
 ## 🔬Test dataset and the use case
