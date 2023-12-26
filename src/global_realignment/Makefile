@@ -6,9 +6,9 @@
 WORKDIR = `pwd`
 
 CC = gcc
-CXX = g++-9
+CXX = g++
 AR = ar
-LD = g++-9
+LD = g++
 WINDRES = windres
 
 INC = 
@@ -27,7 +27,7 @@ LIB_RELEASE = $(LIB)
 LDFLAGS_RELEASE = $(LDFLAGS) -s
 OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
-OUT_RELEASE = bin/Release/ReformAlign_kband
+OUT_RELEASE = bin/Release/global_realignment
 
 OBJ_RELEASE = $(OBJDIR_RELEASE)/AlignmentMetrics.o $(OBJDIR_RELEASE)/FNW.o $(OBJDIR_RELEASE)/FSequence.o $(OBJDIR_RELEASE)/Profile.o $(OBJDIR_RELEASE)/ReformAlignInitializer.o $(OBJDIR_RELEASE)/main.o
 
