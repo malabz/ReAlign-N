@@ -30,7 +30,7 @@ realign_n -h
 1. Download and Compile the source code. (Make sure your version of gcc >= 9.4.0 or clang >= 13.0.0)
 ```shell
 #1 Download
-git clone https://github.com/malabz/TPMA.git
+git clone https://github.com/malabz/ReAlign-N.git
 
 #2 Open the folder
 cd ReAlign-N
