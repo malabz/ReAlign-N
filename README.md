@@ -84,7 +84,7 @@ cd 16s_simu
 ```
 ## 📍Reminder
 1. Currently ReAlign-N is **ONLY** available for DNA/RNA. 
-2. 
+2. MAFFT installation is required for the utilization of ReAlign-N. 
 
 ## 🖥️Environment
 System|GCC version
