@@ -4,7 +4,7 @@ ReAlign-N is a tool written in C++11 for realigning the multiple nucleic acid se
 
 ## 🔨Installation and Usage
 
-### 1.1 OSX/Linux/WSL(Windows Subsystem for Linux ) - from Anaconda
+### 1.1 Linux/WSL(Windows Subsystem for Linux ) - from Anaconda
 1.Install WSL for Windows. Instructional video [1](https://www.youtube.com/watch?v=X-DHaQLrBi8&t=5s) or [2](http://lab.malab.cn/%7Etfr/1.mp4) (Copyright belongs to the original work).
 
 2.Download and install Anaconda. Download Anaconda for different systems [here](https://www.anaconda.com/products/distribution#Downloads). Instructional video of anaconda installation [1](https://www.youtube.com/watch?v=AshsPB3KT-E) or [2](http://lab.malab.cn/%7Etfr/Install_anaconda_in_Linux.mp4) (Copyright belongs to the original work).
@@ -25,9 +25,9 @@ conda install -c malab realign_n
 realign_n -h
 ```
 
-### 1.2 OSX/Linux/WSL(Windows Subsystem for Linux ) - from the source code
+### 1.2 Linux/WSL(Windows Subsystem for Linux ) - from the source code
 
-1. Download and Compile the source code. (Make sure your version of gcc >= 9.4.0 or clang >= 13.0.0)
+1. Download and Compile the source code. (Make sure your version of gcc >= 9.4.0)
 ```shell
 #1 Download
 git clone https://github.com/malabz/ReAlign-N.git
@@ -89,7 +89,6 @@ cd 16s_simu
 ## 🖥️Environment
 System|GCC version
 :---:|:---:
-OSX|clang 13.0.0
 Linux|GCC 9.4.0
 WSL|GCC 9.4.0
 
