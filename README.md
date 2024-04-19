@@ -71,13 +71,13 @@ CIPRES-1024|2047|9|about 1550bp|The average similarity is about 80%
 ### 2. The use case
 ```shell
 # Download data
-wget http://lab.malab.cn/~zyx/tools/ReAlign-N/data/16s_simu.tar.gz
+wget http://lab.malab.cn/~zyx/tools/ReAlign-N/data/16s_like.tar.gz
 
 # Unzip data
-tar -zxvf 16s_simu.tar.gz
+tar -zxvf 16s_like.tar.gz
 
 # Get the folder path
-cd 16s_simu
+cd 16s_like
 
 # Run ReAlign-N
 ./realign_n -r raw_data/16s_similarity_70_1.fas -a msa_results/16s_similarity_70_1_clustalo.fas -o 16s_similarity_70_1_clustalo_realign_n.fas -m 1
