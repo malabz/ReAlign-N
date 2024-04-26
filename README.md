@@ -44,15 +44,18 @@ make
 
 ### 2 Usage
 ```
-/.realign_n -r <unaligned sequences> -a <initial alignment> [-o <output>] [-m <mode>]
-Options:
-  -r <unaligned sequences>     Specify the path of raw data, a file in FASTA format.
-  -a <initial alignment>       Specify the path of initial alignment, a file in FASTA format.
-  -o <output>                  Specify the output for ReAlign-N, a file in FASTA format.
-  -m <mode>                    Specify the mode of ReAlign-N.
-                               1 for local realignment followed by global realignment.
-                               2 for global realignment followed by local realignment.
-  -h                           Print the help message.
+Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode
+
+  Necessary arguments:
+    -r  Specify the path of raw data, a file in FASTA format.
+    -a  Specify the path of initial alignment, a file in FASTA format.
+
+  Optional arguments:
+    -o  Specify the output for ReAlign-N, a file in FASTA format.
+    -m  Specify the mode of ReAlign-N (default mode: 1).
+        1 for local realignment followed by global realignment.
+        2 for global realignment followed by local realignment.
+    -h  Print the help message.
 ```
 
 ## 🔬Test dataset and the use case
@@ -71,7 +74,7 @@ CIPRES-1024|2047|9|about 1550bp|The average similarity is about 80%
 ### 2. The use case
 ```shell
 # Download data
-wget wget http://lab.malab.cn/soft/ReAlign-N/data/16s_like.tar.gz
+wget http://lab.malab.cn/soft/ReAlign-N/data/16s_like.tar.gz
 
 # Unzip data
 tar -zxvf 16s_like.tar.gz
