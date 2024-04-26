@@ -6,6 +6,7 @@
 #include <cstring>
 #include <stdlib.h>
 #include <cmath>
+#include <chrono>
 
 #include "Fasta.h"
 
@@ -46,7 +47,11 @@ static long long score(std::vector<std::string> sequences, unsigned l, unsigned 
 
 static utils::Fasta read_from(char *const file_path) {
     std::ifstream file(file_path);
-    if (!file) exit(0);
+    if (!file) {
+        std::cerr << "Error: cannot open file " << file_path << std::endl;
+        std::cerr << "Please check that the file path is correct and make sure the file exists." << std::endl;
+        exit(1);
+    }
     utils::Fasta fasta(file);
     file.close();
     return fasta;
@@ -54,10 +59,54 @@ static utils::Fasta read_from(char *const file_path) {
 
 static utils::Fasta read_from(std::string file_path) {
     std::ifstream file(file_path);
-    if (!file) exit(0);
+    if (!file) {
+        std::cerr << "Error: cannot open file " << file_path << std::endl;
+        std::cerr << "Please check that the file path is correct and make sure the file exists." << std::endl;
+        exit(1);
+    }
     utils::Fasta fasta(file);
     file.close();
     return fasta;
+}
+
+bool executeCommand(const std::string& command) {
+    FILE* pipe = popen(command.c_str(), "r");
+    if (!pipe) {
+        std::cerr << "Error: Unable to execute command." << std::endl;
+        return false;
+    }
+
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != NULL)
+            result += buffer;
+    }
+    pclose(pipe);
+
+    // 检查命令是否执行成功
+    if (!result.empty()) {
+        std::cerr << "Error message: " << result << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+void printCurrentLocalTime() {
+    // 获取当前系统时钟的时间点
+    auto now = std::chrono::system_clock::now();
+
+    // 将时间点转换为时间类型
+    std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+
+    // 将时间类型转换为本地时间
+    std::tm* local_time = std::localtime(&now_time);
+
+    // 输出本地时间信息
+    char buffer[80];
+    std::strftime(buffer, 80, "[%Y-%m-%d %H:%M:%S] ", local_time);
+    std::cout << buffer;
 }
 
 static std::vector<unsigned int> find_all_matched_columns(utils::Fasta const &fasta) {
@@ -155,13 +204,23 @@ std::vector<std::string> realign_block(utils::Fasta const &fasta, int start_site
     double before_realign_score = score(low_quality_block, 0, low_quality_block[0].size() - 1);
 
     std::ofstream ofs("tmp/tmp_block.fasta");
-    if (!ofs) exit(0);
+    if (!ofs) {
+        std::cerr << "Error: cannot open file tmp/tmp_block.fasta" << std::endl;
+        std::cerr << "Please make sure the file path is correct and has appropriate permissions." << std::endl;
+        exit(1);
+    }
     tmp_block.identifications = fasta.identifications;
     tmp_block.sequences = low_quality_block;
     tmp_block.write_to(ofs);
     ofs.close();
 
-    system("mafft --retree 1 tmp/tmp_block.fasta > tmp/aligned_block.fasta 2>&1");
+    // system("mafft --retree 1 tmp/tmp_block.fasta > tmp/aligned_block.fasta 2>&1");
+    std::string command = "mafft --retree 1 tmp/tmp_block.fasta > tmp/aligned_block.fasta 2>&1";
+    if (!executeCommand(command)) {
+        std::cerr << "Please make sure mafft can be used normally." << std::endl; 
+        exit(1);
+    }
+    
     utils::Fasta after_realigned_block = read_from("tmp/aligned_block.fasta");
     double after_realign_score = score(after_realigned_block.sequences, 0, after_realigned_block.sequences[0].size() - 1);
     if (after_realign_score > before_realign_score) {
@@ -225,13 +284,13 @@ void realign_alignment(utils::Fasta const &fasta, std::vector<unsigned int> cutt
         for (int i = 0; i < fasta.sequences.size(); i++) {
             realigned_sequences[i] = fasta.sequences[i];
         }
-        printf("No regions need optimization.\n");
+        // printf("No regions need optimization.\n");
     }
 
 }
 
 void global_realignment(std::string unaligned_seq, std::string output, std::string initial_alignment) {
-    std::string command = "src/global_realignment/bin/Release/./global_realignment -i ";
+    std::string command = "global_realignment -i ";
     command += unaligned_seq;
     command += " -o ";
     command += output;
@@ -239,21 +298,23 @@ void global_realignment(std::string unaligned_seq, std::string output, std::stri
     command += initial_alignment;
     command += " -t 1";
     // Print the command
-    // std::cout << "Command: " << command << std::endl;
     system(command.c_str());
 }
 
 void displayHelp() {
-    std::cout << "Usage: " << std::endl;
-    std::cout << "/.realign_n -r <unaligned sequences> -a <initial alignment> [-o <output>] [-m <mode>]" << std::endl;
-    std::cout << "Options:" << std::endl;
-    std::cout << "  -r <unaligned sequences>     Specify the path of raw data, a file in FASTA format." << std::endl;
-    std::cout << "  -a <initial alignment>       Specify the path of initial alignment, a file in FASTA format." << std::endl;
-    std::cout << "  -o <output>                  Specify the output for ReAlign-N, a file in FASTA format." << std::endl;
-    std::cout << "  -m <mode>                    Specify the mode of ReAlign-N." << std::endl;
-    std::cout << "                               1 for local realignment followed by global realignment." << std::endl;
-    std::cout << "                               2 for global realignment followed by local realignment." << std::endl;
-    std::cout << "  -h                           Print the help message." << std::endl;
+    std::cout << std::endl;
+    std::cout << "Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode" << std::endl;
+    std::cout << std::endl;
+    std::cout << "  Necessary arguments:" << std::endl;
+    std::cout << "    -r  Specify the path of raw data, a file in FASTA format." << std::endl;
+    std::cout << "    -a  Specify the path of initial alignment, a file in FASTA format." << std::endl;
+    std::cout << std::endl;
+    std::cout << "  Optional arguments:" << std::endl; 
+    std::cout << "    -o  Specify the output for ReAlign-N, a file in FASTA format." << std::endl;
+    std::cout << "    -m  Specify the mode of ReAlign-N (default mode: 1)." << std::endl;
+    std::cout << "        1 for local realignment followed by global realignment." << std::endl;
+    std::cout << "        2 for global realignment followed by local realignment." << std::endl;
+    std::cout << "    -h  Print the help message." << std::endl;
 }
 
 int main(int argc, char **argv) {
@@ -267,6 +328,8 @@ int main(int argc, char **argv) {
     std::string unaligned_seq, initial_alignment;
     std::string output = "realign_n_result.fas";
     std::string mode = "1";
+    std::string length = "10";
+    std::string entropy = "0.3";
 
     for (int i = 1; i < argc; i += 2) {
         std::string option = argv[i];
@@ -280,6 +343,10 @@ int main(int argc, char **argv) {
                 output = value;
             } else if (option == "-m") {
                 mode = value;
+            // } else if (option == "-l") {
+            //     length = value;
+            // } else if (option == "-e") {
+            //     entropy = value;
             } else {
                 std::cerr << "Unknown option: " << option << std::endl;
                 displayHelp();
@@ -300,19 +367,27 @@ int main(int argc, char **argv) {
     }
 
     // Print the arguments
-    std::cout << "Unaligned sequences: " << unaligned_seq << std::endl;
-    std::cout << "Initial alignment  : " << initial_alignment << std::endl;
-    std::cout << "Realignment mode   : " << mode << std::endl;
+    std::cout << std::endl << "**" << std::endl;
+    std::cout << "** Unaligned sequences: " << unaligned_seq << std::endl;
+    std::cout << "** Initial alignment  : " << initial_alignment << std::endl;
+    std::cout << "** Output file        : " << output << std::endl;
+    std::cout << "** Realignment mode   : " << mode << std::endl;
+    std::cout << "**" << std::endl << std::endl;
+    
+    int min_low_quality_block_length = std::stoi(length);
     
     system("mkdir tmp");
     
     if (mode == "1") {
         // Read data in fasta format
+        
         utils::Fasta alignment = read_from(initial_alignment);
-        int min_low_quality_block_length = 10;
+
         std::vector<std::string> matched_results;
         std::vector<std::string> entropy_results;
-
+        
+        printCurrentLocalTime();
+        std::cout << "Matched local realigning..." << std::endl;
         // Find all matched columns in the initial alignment
         std::vector<unsigned int> matched_columns = find_all_matched_columns(alignment);
 
@@ -323,7 +398,11 @@ int main(int argc, char **argv) {
         realign_alignment(alignment, blocks_cutting_sites, min_low_quality_block_length);
         matched_results.swap(realigned_sequences);
         realigned_sequences.clear();
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
 
+        printCurrentLocalTime();
+        std::cout << "Entropy local realigning..." << std::endl;
         // Find all clear columns in the initial alignment
         std::vector<unsigned int> entropy_columns = find_clear_columns(alignment);
 
@@ -334,37 +413,62 @@ int main(int argc, char **argv) {
         realign_alignment(alignment, blocks_cutting_sites_entropy, min_low_quality_block_length);
         entropy_results.swap(realigned_sequences);
         realigned_sequences.clear();
-        
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
+
         // Save the realigned sequences
         std::ofstream ofs("tmp/local_realigned.fas");
-        if (!ofs) exit(0);
+        if (!ofs) {
+            std::cerr << "Error: cannot open file tmp/local_realigned.fas." << std::endl;
+            std::cerr << "Please make sure the file path is correct and has appropriate permissions." << std::endl;
+            return 1;
+        }
         unsigned int matched_score = score(matched_results, 0, matched_results[0].size() - 1);
         unsigned int entropy_score = score(entropy_results, 0, entropy_results[0].size() - 1);
-
+        
+        printCurrentLocalTime();
         if(matched_score > entropy_score) {
             alignment.sequences = std::move(matched_results);
             alignment.write_to(ofs);
             ofs.close();
-            std::cout << "Use matched results\n";
+            std::cout << "Matched result is better.\n";
         } else {
             alignment.sequences = std::move(entropy_results);
             alignment.write_to(ofs);
             ofs.close();
-            std::cout << "Use entropy results\n";
+            std::cout << "Entropy result is better.\n";
         }
         matched_results.clear();
         entropy_results.clear();
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
+
+        printCurrentLocalTime();
+        std::cout << "Global realigning..." << std::endl;
+
         global_realignment(unaligned_seq, output, "tmp/local_realigned.fas");
+        
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
 
     }
     if (mode == "2") {
+        printCurrentLocalTime();
+        std::cout << "Global realigning..." << std::endl;
+
         global_realignment(unaligned_seq, "tmp/global_realigned.fas", initial_alignment);
+
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
 
         // Read data in fasta format
         utils::Fasta alignment = read_from("tmp/global_realigned.fas");
-        int min_low_quality_block_length = 10;
+        // int min_low_quality_block_length = 10;
         std::vector<std::string> matched_results;
         std::vector<std::string> entropy_results;
+
+        printCurrentLocalTime();
+        std::cout << "Matched local realigning..." << std::endl;
 
         // Find all matched columns in the initial alignment
         std::vector<unsigned int> matched_columns = find_all_matched_columns(alignment);
@@ -377,6 +481,12 @@ int main(int argc, char **argv) {
         matched_results.swap(realigned_sequences);
         realigned_sequences.clear();
 
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
+
+        printCurrentLocalTime();
+        std::cout << "Entropy local realigning..." << std::endl;
+
         // Find all clear columns in the initial alignment
         std::vector<unsigned int> entropy_columns = find_clear_columns(alignment);
 
@@ -388,28 +498,37 @@ int main(int argc, char **argv) {
         entropy_results.swap(realigned_sequences);
         realigned_sequences.clear();
 
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
 
         // Save the realigned sequences
         std::ofstream ofs(output);
-        if (!ofs) exit(0);
+        if (!ofs) {
+            std::cerr << "Error: cannot open file " << output << std::endl;
+            std::cerr << "Please check that the file path is correct and make sure the file exists." << std::endl;
+            return 1;
+        }
         unsigned int matched_score = score(matched_results, 0, matched_results[0].size() - 1);
         unsigned int entropy_score = score(entropy_results, 0, entropy_results[0].size() - 1);
+        
+        printCurrentLocalTime();
         if(matched_score > entropy_score) {
             alignment.sequences = std::move(matched_results);
             alignment.write_to(ofs);
             ofs.close();
-            std::cout << "Use matched results\n";
+            std::cout << "Matched result is better.\n";
         } else {
             alignment.sequences = std::move(entropy_results);
             alignment.write_to(ofs);
             ofs.close();
-            std::cout << "Use entropy results\n";
+            std::cout << "Entropy result is better.\n";
         }
         matched_results.clear();
         entropy_results.clear();
+        printCurrentLocalTime();
+        std::cout << "Done." << std::endl;
     }
-    std::cout << "The output of ReAlign-N is stored in " << output << "." << std::endl;
-    std::cout << "Finish!" << std::endl;
+
     system("rm -r tmp");
     return 0;
 }
