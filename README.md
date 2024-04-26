@@ -71,7 +71,7 @@ CIPRES-1024|2047|9|about 1550bp|The average similarity is about 80%
 ### 2. The use case
 ```shell
 # Download data
-wget http://lab.malab.cn/~zyx/tools/ReAlign-N/data/16s_like.tar.gz
+wget wget http://lab.malab.cn/soft/ReAlign-N/data/16s_like.tar.gz
 
 # Unzip data
 tar -zxvf 16s_like.tar.gz
@@ -84,7 +84,8 @@ cd 16s_like
 ```
 ## 📍Reminder
 1. Currently ReAlign-N is **ONLY** available for DNA/RNA. 
-2. MAFFT installation is required for the utilization of ReAlign-N. 
+2. Ensure that the sequence ID entered into ReAlign is unique.
+3. MAFFT installation is required for the utilization of ReAlign-N. 
 
 ## 🖥️Environment
 System|GCC version
