@@ -52,9 +52,11 @@ Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode
 
   Optional arguments:
     -o  Specify the output for ReAlign-N, a file in FASTA format.
-    -m  Specify the mode of ReAlign-N (default mode: 1).
-        1 for local realignment followed by global realignment.
-        2 for global realignment followed by local realignment.
+    -m  Specify the minium split distance of match (default based on the similarity).
+    -e  Specify the minium split distance of entropy (default based on the similarity).
+    -p  Specify the pattern of ReAlign-N (default pattern: 1).
+          1 for local realignment followed by global realignment.
+          2 for global realignment followed by local realignment.
     -h  Print the help message.
 ```
 
@@ -63,9 +65,12 @@ Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode
 
 Dataset|Sequences Num|Repeats Num|Avg Length|Similarity
 :---:|:---:|:---:|:---:|:---:
-16s simu|100|9|about 1550bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
-mt simu|100|9|about 16000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
-sars2 simu|100|9|about 29000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+16S rRNA|1000|10|about 1440bp|The average similarity is about 72%
+mt genome|200|10|about 16570bp|The average similarity is about 99%
+23S rRNA|500|10|about 3120bp|The average similarity is about 92%
+16S-like rRNA|100|9|about 1550bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+mt-like genome|100|9|about 16000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
+SARS-CoV-2-like genome|100|9|about 29000bp|14 sets of data with different similarities (99%, 98%, 97%, 96%, 95%, 94%, 93%, 92%, 91%, 90%, 85%, 80%, 75%, 70%)
 CIPRES-128|255|9|about 1550bp|The average similarity is about 80%
 CIPRES-256|511|9|about 1550bp|The average similarity is about 80%
 CIPRES-512|1023|9|about 1550bp|The average similarity is about 80%
@@ -83,7 +88,7 @@ tar -zxvf 16s_like.tar.gz
 cd 16s_like
 
 # Run ReAlign-N
-./realign_n -r raw_data/16s_similarity_70_1.fas -a msa_results/16s_similarity_70_1_clustalo.fas -o 16s_similarity_70_1_clustalo_realign_n.fas -m 1
+./realign_n -r raw_data/16s_similarity_70_1.fas -a msa_results/16s_similarity_70_1_clustalo.fas -o 16s_similarity_70_1_clustalo_realign_n.fas -p 1
 ```
 ## 📍Reminder
 1. Currently ReAlign-N is **ONLY** available for DNA/RNA. 
