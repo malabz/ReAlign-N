@@ -92,8 +92,9 @@ cd 16s_like
 ```
 ## 📍Reminder
 1. Currently ReAlign-N is **ONLY** available for DNA/RNA. 
-2. Ensure that the sequence ID entered into ReAlign is unique.
-3. MAFFT installation is required for the utilization of ReAlign-N. 
+2. Please ensure that the sequence contains only AGCT (for DNA) or AGCU (for RNA).
+3. Please ensure that the sequence ID entered into ReAlign is unique.
+4. MAFFT installation is required for the utilization of ReAlign-N. 
 
 ## 🖥️Environment
 System|GCC version
