@@ -27,7 +27,7 @@ realign_n -h
 
 ### 1.2 Linux/WSL(Windows Subsystem for Linux ) - from the source code
 
-1. Download and Compile the source code. (Make sure your version of gcc >= 9.4.0)
+1.Download and Compile the source code. (Make sure your version of gcc >= 9.4.0)
 ```shell
 #1 Download
 git clone https://github.com/malabz/ReAlign-N.git
@@ -44,7 +44,7 @@ make
 
 ### 2 Usage
 ```
-Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode
+Usage: /.realign_n [-r] path [-a] path [-o] path [-m] distance [-e] distance [-p] pattern [-h]
 
   Necessary arguments:
     -r  Specify the path of raw data, a file in FASTA format.
@@ -59,6 +59,90 @@ Usage: /.realign_n [-r] path [-a] path [-o] path [-m] mode
           2 for global realignment followed by local realignment.
     -h  Print the help message.
 ```
+### 3 ReAlign-N Parameters Description
+1. Usage: 
+```
+/.realign_n [-r] path [-a] path [-o] path [-m] distance [-e] distance [-p] pattern [-h]
+```
+2. Required Arguments:
+*   -r
+
+    Specify the path to the raw data file in FASTA format.
+    
+    Example: -r /path/to/raw_data.fasta
+
+*   -a
+
+    Specify the path to the initial alignment file in FASTA format.
+
+    Example: -a /path/to/initial_alignment.fasta
+
+3. Optional Arguments:
+
+*   -o
+
+    Specify the path for the ReAlign-N output file in FASTA format.
+
+    If not provided, the output will be saved to the default path（/CURRENT_PATH/realign_n_result.fas）.
+
+    Example: -o /path/to/output.fasta
+
+*   -m
+
+    Specify the minimum split distance for matching. 
+    
+    If not provided, the default value is automatically determined based on the similarity of the input data.
+
+    Example: -m 10 sets the minimum split distance for matches to 10.
+
+*   -e
+
+    Specify the minimum split distance for entropy. 
+    
+    If not provided, the default value is automatically determined based on the similarity of the input data.
+
+    Example: -e 5 sets the minimum split distance for entropy to 5.
+
+*   -p
+
+    Specify the alignment pattern for ReAlign-N (default pattern: 1).
+
+    1: Local realignment followed by global realignment.
+
+    2: Global realignment followed by local realignment.
+
+    Example: -p 2 sets the pattern to global realignment followed by local realignment.
+
+*   -h
+
+    Print the help message displaying all available parameters and their descriptions.
+
+
+4. Minimum split distances correspond to different average similarity levels and sequence counts.
+
+*   The default value for match
+
+    Avg similarity|Sequences Counts|Distance
+    :---:|:---:|:---:
+    [0.99,1]|<200|5
+    [0.96,0.99)|<200|10
+    [0.93,0.96)|<200|15
+    [0.90,0.93)|<200|20
+    [0.80,0.90)|<200|30
+    [0,0.80)|<200|50
+    [0.90,1]|>=200|10
+    [0,0.90)|>=200|50
+
+*   The default value for entropy
+
+    Avg similarity|Sequences Counts|Distance
+    :---:|:---:|:---:
+    [0.97,1]|<200|5
+    [0.90,0.97)|<200|50
+    [0,0.90)|<200|5
+    [0.90,1]|>=200|10
+    [0,0.90)|>=200|50
+
 
 ## 🔬Test dataset and the use case
 ### 1. Information about the test dataset
