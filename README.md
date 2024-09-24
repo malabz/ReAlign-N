@@ -143,6 +143,14 @@ Usage: /.realign_n [-r] path [-a] path [-o] path [-m] distance [-e] distance [-p
     [0.90,1]|>=200|10
     [0,0.90)|>=200|50
 
+*   Note
+    
+    If the user does not specify -e **AND** -m in the command line, their default values are set based on the similarity observed during the initial alignment. 
+    
+    If the user specifies only -e **OR** -m, the program will use the provided parameter for calculation, while the unspecified parameter will be determined based on the default value (i.e., the similarity of the initial alignment). 
+    
+    If both -e **AND** -m are specified, the program will calculate entirely based on the user’s input.
+
 
 ## 🔬Test dataset and the use case
 ### 1. Information about the test dataset
