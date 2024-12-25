@@ -195,7 +195,9 @@ Linux|GCC 9.4.0
 WSL|GCC 9.4.0
 
 ## 🔖Citation
+If you use this software, please cite:
 
+Yixiao Zhai, Tong Zhou, Yanming Wei, Quan Zou, Yansu Wang, ReAlign-N: an integrated realignment approach for multiple nucleic acid sequence alignment, combining global and local realignments, NAR Genomics and Bioinformatics, Volume 6, Issue 4, December 2024, lqae170, https://doi.org/10.1093/nargab/lqae170
 
 ## 👋Contacts
 The software tools are developed and maintained by 🧑‍🏫[ZOU's lab](http://lab.malab.cn/~zq/en/index.html).
